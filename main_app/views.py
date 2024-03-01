@@ -42,22 +42,17 @@ class GroupViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipesSerializer
+    permission_classes = [permissions.IsAuthenticated]
 
-    def retrieve(self, request, *args, **kwargs):
-        instance = self.get_object()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data)
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
     
-    @api_view(['POST'])
-    def create_recipe(request, *args, **kwargs):
-        print(request)
-        post_id = kwargs.get('pk')
-        user_id = request.user.id
-        user = User.objects.get(id=user_id)  
-        post = Post.objects.get(pk=post_id)
-        comment_text = request.data.get('comment_text')
-        comment = Comment.objects.create(post=post, comment_text=comment_text, user=user)
-        return Response({'message': 'Comment created successfully'})
+    def get(self, request):
+        serializer = RecipesSerializer(Recipe.objects.all(), many=True)
+        return Response(data=serializer.data)
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()

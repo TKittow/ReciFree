@@ -6,10 +6,11 @@ from django.contrib.auth.models import User
 class Recipe(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    author = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     ingredients = models.ManyToManyField('Ingredient', related_name='recipes', blank=True)
+    image = models.TextField()
 
     def __str__(self):
         return self.name
