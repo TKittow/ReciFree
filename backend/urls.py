@@ -25,6 +25,7 @@ router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
 router.register(r'groups', views.GroupViewSet)
 router.register(r'recipes', views.RecipeViewSet)
+router.register(r'meals', views.ApiMealViewSet)
 router.register(r'ingredients', views.IngredientViewSet)
 
 urlpatterns = [
@@ -33,5 +34,6 @@ urlpatterns = [
     path('token/refresh/', jwt_views.TokenRefreshView.as_view(), name='token_refresh'),
     path('auth_logout/', views.LogoutView.as_view(), name='auth_logout'),
     path('signup/', views.SignupView.as_view(), name='auth_register'),
+    path('users/<int:user_id>/', views.UserDetailView.as_view()),
     path('', include(router.urls))
 ]

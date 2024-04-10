@@ -1,4 +1,4 @@
-from .models import Recipe, Ingredient
+from .models import Recipe, Ingredient, ApiMeal
 from rest_framework import permissions, viewsets, status, parsers
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -12,7 +12,8 @@ from .serializers import *
 
 from django.contrib.auth.models import Group, User
 from rest_framework.generics import CreateAPIView
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
@@ -83,3 +84,29 @@ class SignupView(APIView):
             return Response(status=status.HTTP_200_OK)
         except Exception as e:
             return Response(status=status.HTTP_400_BAD_REQUEST)
+        
+class UserDetailView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id):
+        try:
+            user = User.objects.get(id=user_id)
+            serializer = UserSerializer(user)
+            return Response(serializer.data)
+        except User.DoesNotExist:
+            return Response({'error': 'User not found'}, status=404)
+        
+class ApiMealViewSet(viewsets.ModelViewSet):
+    queryset = ApiMeal.objects.all()
+    serializer_class = ApiMealsSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    def get(self, request):
+        serializer = ApiMealsSerializer(ApiMeal.objects.all(), many=True)
+        return Response(data=serializer.data)
