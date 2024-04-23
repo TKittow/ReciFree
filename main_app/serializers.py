@@ -18,7 +18,7 @@ class GroupSerializer(serializers.HyperlinkedModelSerializer):
 class IngredientsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ingredient
-        fields = '__all__'
+        fields = ['id', 'name']
 
 class RecipeIngredientsSerializer(serializers.ModelSerializer):
     ingredient = IngredientsSerializer()
