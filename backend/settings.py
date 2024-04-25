@@ -72,7 +72,8 @@ ROOT_URLCONF = 'backend.urls'
 CSRF_TRUSTED_ORIGINS = [
     'http://locahost/',
     'http://127.0.0.1/',
-    'http://recifreefe-production.up.railway.app/'
+    'http://recifreefe-production.up.railway.app/',
+    'https://recifree-production.up.railway.app/'
 ]
 
 TEMPLATES = [
