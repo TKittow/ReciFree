@@ -35,7 +35,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     'recifree-production.up.railway.app',
-    'recifree.railway.internal'
+    'recifree.railway.internal',
+    'https://recifree-production.up.railway.app'
 ]
 
 
@@ -73,7 +74,13 @@ CSRF_TRUSTED_ORIGINS = [
     'http://locahost/',
     'http://127.0.0.1/',
     'http://recifreefe-production.up.railway.app/',
-    'https://recifree-production.up.railway.app/'
+    'https://recifree-production.up.railway.app/',
+    'http://recifreefe-production.up.railway.app',
+    'https://recifree-production.up.railway.app',
+    'https://recifreefe-production.up.railway.app/',
+    'http://recifree-production.up.railway.app/',
+    'https://recifreefe-production.up.railway.app',
+    'http://recifree-production.up.railway.app'
 ]
 
 TEMPLATES = [
