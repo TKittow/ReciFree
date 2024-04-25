@@ -22,9 +22,6 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.decorators import api_view
 import uuid
 import os
-# import boto3
-
-from .serializers import *
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
@@ -33,7 +30,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 def userFinder(request):
     user = request.data.get('username')
-    return User.objects.get(username = user)
+    return User.objects.get(username=user)
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
@@ -46,14 +43,26 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data, context={'request': request})  # Pass request to serializer context
         serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        self.perform_create(serializer)
+
+        # Create RecipeIngredient instances for each ingredient
+        recipe = serializer.instance
+        ingredients_data = request.data.get('ingredients', [])
+        for ingredient_data in ingredients_data:
+            ingredient_id = ingredient_data.get('id')
+            quantity = ingredient_data.get('quantity')
+            RecipeIngredient.objects.create(recipe=recipe, ingredient_id=ingredient_id, quantity=quantity)
+
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
     
     def get(self, request):
-        serializer = RecipesSerializer(Recipe.objects.all(), many=True)
+        serializer = RecipesSerializer(Recipe.objects.all(), many=True, context={'request': request})  # Pass request to serializer context
         return Response(data=serializer.data)
+
+        
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
@@ -86,12 +95,11 @@ class SignupView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
         
 class UserDetailView(APIView):
-    permission_classes = [IsAuthenticated]
 
     def get(self, request, user_id):
         try:
             user = User.objects.get(id=user_id)
-            serializer = UserSerializer(user)
+            serializer = UserSerializer(user, context={'request': request})  # Pass request to serializer context
             return Response(serializer.data)
         except User.DoesNotExist:
             return Response({'error': 'User not found'}, status=404)
@@ -102,11 +110,11 @@ class ApiMealViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
+        serializer = self.get_serializer(data=request.data, context={'request': request})  # Pass request to serializer context
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def get(self, request):
-        serializer = ApiMealsSerializer(ApiMeal.objects.all(), many=True)
+        serializer = ApiMealsSerializer(ApiMeal.objects.all(), many=True, context={'request': request})  # Pass request to serializer context
         return Response(data=serializer.data)
