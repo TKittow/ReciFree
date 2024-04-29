@@ -35,5 +35,6 @@ urlpatterns = [
     path('auth_logout/', views.LogoutView.as_view(), name='auth_logout'),
     path('signup/', views.SignupView.as_view(), name='auth_register'),
     path('users/<int:user_id>/', views.UserDetailView.as_view()),
+    path('meals/<str:username>/', views.MealsUserAdded.as_view()),
     path('', include(router.urls))
 ]

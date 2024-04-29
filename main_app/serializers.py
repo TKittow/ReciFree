@@ -36,5 +36,5 @@ class RecipesSerializer(serializers.ModelSerializer):
 class ApiMealsSerializer(serializers.ModelSerializer):
     class Meta:
         model = ApiMeal
-        fields = ['id', 'name', 'api_id', 'description', 'source', 'created_at', 'updated_at', 'steps', 'image']
+        fields = ['id', 'name', 'api_id', 'description', 'source', 'created_at', 'updated_at', 'steps', 'image', 'author']
     

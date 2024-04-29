@@ -42,6 +42,7 @@ class ApiMeal(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     image = models.TextField()
     steps = models.TextField(max_length=1000, null=True)
+    author = models.CharField(max_length=100, null=False, default='Unidentified')
 
     def __str__(self):
         return self.name

@@ -118,3 +118,10 @@ class ApiMealViewSet(viewsets.ModelViewSet):
     def get(self, request):
         serializer = ApiMealsSerializer(ApiMeal.objects.all(), many=True, context={'request': request})  # Pass request to serializer context
         return Response(data=serializer.data)
+
+class MealsUserAdded(APIView):
+    def get(self, request, username):
+        # Filter meals based on the provided username
+        meals = ApiMeal.objects.filter(author=username)
+        serializer = ApiMealsSerializer(meals, many=True)
+        return Response(serializer.data)
