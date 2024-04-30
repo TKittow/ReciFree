@@ -37,11 +37,11 @@ class ApiMeal(models.Model):
     name = models.CharField(max_length=200)
     api_id = models.CharField(max_length=20)
     description = models.TextField()
-    source = models.CharField(max_length=200)
+    source = models.CharField(max_length=200, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    image = models.TextField()
-    steps = models.TextField(max_length=1000, null=True)
+    image = models.TextField(max_length=300)
+    steps = models.TextField(max_length=3000, null=True)
     author = models.CharField(max_length=100, null=False, default='Unidentified')
 
     def __str__(self):
